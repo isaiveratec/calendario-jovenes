@@ -23,7 +23,7 @@
         }
 
         .day-cell {
-            min-height: 110px;
+            min-height: 140px;
             transition: all 0.2s;
         }
 
@@ -32,19 +32,17 @@
         }
 
         .event-tag {
-            font-size: 0.72rem;
-            padding: 4px 8px;
+            font-size: 0.68rem;
+            padding: 5px 8px;
             border-radius: 6px;
             margin-top: 4px;
             cursor: pointer;
-            line-height: 1.3;
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
+            line-height: 1.4;
+            display: block; /* Para mostrar todo el texto */
+            word-break: break-word;
         }
 
-        /* Colores definidos por Maestro */
+        /* Colores por Maestro */
         .event-isai-ara { background-color: #dcfce7; color: #166534; border-left: 3px solid #22c55e; }
         .event-sam-eli { background-color: #dbeafe; color: #1e40af; border-left: 3px solid #3b82f6; }
         .event-default { background-color: #f1f5f9; color: #475569; border-left: 3px solid #cbd5e1; }
@@ -72,11 +70,10 @@
 <body>
 
 <div class="max-w-6xl mx-auto p-4 md:p-8">
-    <!-- Encabezado del Calendario -->
     <header class="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
             <h1 class="text-4xl font-extrabold text-slate-900 tracking-tight">Programación 2026</h1>
-            <p class="text-slate-500 mt-1">Colores por Maestro: <span class="text-green-600 font-bold">Isaì/Ara</span> y <span class="text-blue-600 font-bold">Sam/Eli</span></p>
+            <p class="text-slate-500 mt-1">Calendario de clases por grupo y maestros.</p>
         </div>
         
         <div class="flex items-center gap-3 bg-white p-2 rounded-xl border shadow-sm">
@@ -86,24 +83,15 @@
         </div>
     </header>
 
-    <!-- Sección de Filtros -->
     <div class="mb-8 space-y-4">
         <div class="flex flex-wrap items-center gap-3">
-            <span class="text-xs font-bold text-slate-400 uppercase tracking-widest mr-2">Filtrar por Grupo:</span>
+            <span class="text-xs font-bold text-slate-400 uppercase tracking-widest mr-2">Grupo:</span>
             <button onclick="setFilter('group', 'all')" id="filter-group-all" class="filter-btn-active px-5 py-2 rounded-full bg-white text-slate-700 text-sm font-semibold border shadow-sm transition hover:scale-105">Todos</button>
-            <button onclick="setFilter('group', 'Adolescentes')" id="filter-group-Adolescentes" class="px-5 py-2 rounded-full bg-white text-slate-700 text-sm font-semibold border border-slate-200 shadow-sm transition hover:scale-105 hover:bg-slate-50">Adolescentes</button>
-            <button onclick="setFilter('group', 'Jóvenes')" id="filter-group-Jóvenes" class="px-5 py-2 rounded-full bg-white text-slate-700 text-sm font-semibold border border-slate-200 shadow-sm transition hover:scale-105 hover:bg-slate-50">Jóvenes</button>
-        </div>
-        
-        <div class="flex flex-wrap items-center gap-3">
-            <span class="text-xs font-bold text-slate-400 uppercase tracking-widest mr-2">Filtrar por Maestro:</span>
-            <button onclick="setFilter('teacher', 'all')" id="filter-teacher-all" class="filter-btn-active px-5 py-2 rounded-full bg-white text-slate-700 text-sm font-semibold border shadow-sm transition hover:scale-105">Todos</button>
-            <button onclick="setFilter('teacher', 'Isaì y Ara')" id="filter-teacher-Isaì" class="px-5 py-2 rounded-full bg-white text-green-700 text-sm font-semibold border border-green-200 shadow-sm transition hover:scale-105 hover:bg-green-50">Isaì y Ara</button>
-            <button onclick="setFilter('teacher', 'Sam y Eli')" id="filter-teacher-Sam" class="px-5 py-2 rounded-full bg-white text-blue-700 text-sm font-semibold border border-blue-200 shadow-sm transition hover:scale-105 hover:bg-blue-50">Sam y Eli</button>
+            <button onclick="setFilter('group', 'Adolescentes')" id="filter-group-Adolescentes" class="px-5 py-2 rounded-full bg-white text-slate-700 text-sm font-semibold border border-slate-200 shadow-sm transition hover:scale-105">Adolescentes</button>
+            <button onclick="setFilter('group', 'Jóvenes')" id="filter-group-Jóvenes" class="px-5 py-2 rounded-full bg-white text-slate-700 text-sm font-semibold border border-slate-200 shadow-sm transition hover:scale-105">Jóvenes</button>
         </div>
     </div>
 
-    <!-- Contenedor del Calendario -->
     <div class="bg-white rounded-2xl shadow-2xl overflow-hidden border border-slate-200">
         <div class="calendar-grid border-b bg-slate-50">
             <div class="py-4 text-center text-xs font-bold text-slate-400 uppercase tracking-widest">Dom</div>
@@ -114,48 +102,38 @@
             <div class="py-4 text-center text-xs font-bold text-slate-400 uppercase tracking-widest">Vie</div>
             <div class="py-4 text-center text-xs font-bold text-slate-400 uppercase tracking-widest">Sáb</div>
         </div>
-        <div id="calendarDays" class="calendar-grid">
-            <!-- Los días se inyectan dinámicamente -->
-        </div>
+        <div id="calendarDays" class="calendar-grid"></div>
     </div>
 </div>
 
-<!-- Ventana Modal de Detalles -->
 <div id="eventModal" class="modal" onclick="closeModal()">
     <div class="bg-white rounded-3xl p-8 max-w-md w-full m-4 shadow-2xl transition-all transform scale-95 opacity-0 active:scale-100 active:opacity-100" id="modalContent" onclick="event.stopPropagation()">
         <div class="flex justify-between items-start mb-6">
             <span id="modalGroup" class="text-xs font-black uppercase tracking-widest px-3 py-1 rounded-full"></span>
             <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600 transition"><i class="fas fa-times text-2xl"></i></button>
         </div>
-        <h3 id="modalTitle" class="text-2xl font-extrabold text-slate-900 mb-4 leading-tight"></h3>
+        <h3 id="modalTitle" class="text-xl font-extrabold text-slate-900 mb-4 leading-tight"></h3>
         
         <div class="space-y-4">
             <div class="flex items-center gap-3 text-slate-600">
-                <div class="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center">
-                    <i class="far fa-calendar-alt"></i>
-                </div>
+                <div class="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center"><i class="far fa-calendar-alt"></i></div>
                 <span id="modalDate" class="font-medium"></span>
             </div>
-            
             <div class="flex items-center gap-3 text-slate-600">
-                <div class="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center">
-                    <i class="fas fa-user-tie text-sm"></i>
-                </div>
+                <div class="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center"><i class="fas fa-user-tie text-sm"></i></div>
                 <div>
                     <p class="text-[10px] font-bold text-slate-400 uppercase leading-none mb-1">Maestros</p>
                     <p id="modalTeachers" class="font-bold text-slate-800"></p>
                 </div>
             </div>
         </div>
-
         <button onclick="closeModal()" class="mt-8 w-full py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl transition">Cerrar</button>
     </div>
 </div>
 
 <script>
-    // Listado de clases y actividades
+    // Datos procesados del TSV
     const events = [
-        // ADOLESCENTES
         { group: "Adolescentes", title: "El marco del evangelio", date: "2026-02-01", teachers: "Isaì y Ara" },
         { group: "Adolescentes", title: "Aparentando vs. vivir el evangelio", date: "2026-02-15", teachers: "Sam y Eli" },
         { group: "Adolescentes", title: "Creyendo en el evangelio", date: "2026-03-01", teachers: "Isaì y Ara" },
@@ -165,150 +143,117 @@
         { group: "Adolescentes", title: "La misión", date: "2026-04-19", teachers: "Isaì y Ara" },
         { group: "Adolescentes", title: "El perdón", date: "2026-05-03", teachers: "Sam y Eli" },
         { group: "Adolescentes", title: "El conflicto", date: "2026-05-17", teachers: "Isaí y Ara" },
-        
-        // JÓVENES
         { group: "Jóvenes", title: "Prefacio", date: "2026-02-05", teachers: "Isaì y Ara" },
         { group: "Jóvenes", title: "Prefacio", date: "2026-02-06", teachers: "Isaì y Ara" },
-        { group: "Jóvenes", title: "Libro 1: La ley de la naturaleza humana", date: "2026-02-19", teachers: "Sam y Eli" },
-        { group: "Jóvenes", title: "Libro 1: Continuación", date: "2026-02-20", teachers: "Sam y Eli" },
-        { group: "Jóvenes", title: "Libro 1: Lo que yace detrás de la ley", date: "2026-03-06", teachers: "Isaì y Ara" },
-        { group: "Jóvenes", title: "Libro 1: Conclusión", date: "2026-03-07", teachers: "Isaì y Ara" },
-        { group: "Jóvenes", title: "Libro 2: Las concepciones rivales de Dios", date: "2026-03-20", teachers: "Sam y Eli" },
-        { group: "Jóvenes", title: "Libro 2: La invasión", date: "2026-03-21", teachers: "Sam y Eli" },
-        { group: "Jóvenes", title: "Libro 2: El perfecto penitente", date: "2026-04-03", teachers: "Isaì y Ara" },
-        { group: "Jóvenes", title: "Libro 2: Conclusión práctica", date: "2026-04-04", teachers: "Isaì y Ara" },
-        { group: "Jóvenes", title: "Libro 3: Las virtudes cardinales", date: "2026-04-17", teachers: "Sam y Eli" },
-        { group: "Jóvenes", title: "Libro 3: Moral Social", date: "2026-04-18", teachers: "Sam y Eli" },
-        { group: "Jóvenes", title: "Libro 3: Moral Sexual y Matrimonio", date: "2026-05-01", teachers: "Isaì y Ara" },
-        { group: "Jóvenes", title: "Libro 3: El Gran Pecado", date: "2026-05-02", teachers: "Isaì y Ara" },
-        { group: "Jóvenes", title: "Libro 3: Caridad y Esperanza", date: "2026-05-15", teachers: "Sam y Eli" },
-        { group: "Jóvenes", title: "Libro 3: Fe", date: "2026-05-16", teachers: "Sam y Eli" },
-        { group: "Jóvenes", title: "Libro 3: Fe (Continuación)", date: "2026-05-29", teachers: "Isaì y Ara" },
-        { group: "Jóvenes", title: "Libro 3: Conclusión del Libro 3", date: "2026-05-30", teachers: "Isaì y Ara" }
+        { group: "Jóvenes", title: "Libro 1: 1. LA LEY DE LA NATURALEZA HUMANA, 2. ALGUNAS OBJECIONES, 3. LA REALIDAD DE LA LEY", date: "2026-02-19", teachers: "Sam y Eli" },
+        { group: "Jóvenes", title: "Libro 1: 1. LA LEY DE LA NATURALEZA HUMANA, 2. ALGUNAS OBJECIONES, 3. LA REALIDAD DE LA LEY", date: "2026-02-20", teachers: "Sam y Eli" },
+        { group: "Jóvenes", title: "Libro 1: 4. LO QUE YACE DETRÁS DE LA LEY, 5. TENEMOS MOTIVOS PARA ESTAR INQUIETOS", date: "2026-03-06", teachers: "Isaì y Ara" },
+        { group: "Jóvenes", title: "Libro 1: 4. LO QUE YACE DETRÁS DE LA LEY, 5. TENEMOS MOTIVOS PARA ESTAR INQUIETOS", date: "2026-03-07", teachers: "Isaì y Ara" },
+        { group: "Jóvenes", title: "Libro 2: 1. LAS CONCEPCIONES RIVALES DE DIOS, 2. LA INVASIÓN", date: "2026-03-20", teachers: "Sam y Eli" },
+        { group: "Jóvenes", title: "Libro 2: 1. LAS CONCEPCIONES RIVALES DE DIOS, 2. LA INVASIÓN", date: "2026-03-21", teachers: "Sam y Eli" },
+        { group: "Jóvenes", title: "Libro 2: 3. LA ALTERNATIVA IMPACTANTE, 4. EL PERFECTO PENITENTE, 5. LA CONCLUSIÓN PRÁCTICA", date: "2026-04-03", teachers: "Isaì y Ara" },
+        { group: "Jóvenes", title: "Libro 2: 3. LA ALTERNATIVA IMPACTANTE, 4. EL PERFECTO PENITENTE, 5. LA CONCLUSIÓN PRÁCTICA", date: "2026-04-04", teachers: "Isaì y Ara" },
+        { group: "Jóvenes", title: "Libro 3: 1. LAS TRES PARTES DE LA MORALIDAD, 2. LAS VIRTUDES CARDINALES, 3. LA MORAL SOCIAL", date: "2026-04-17", teachers: "Sam y Eli" },
+        { group: "Jóvenes", title: "Libro 3: 1. LAS TRES PARTES DE LA MORALIDAD, 2. LAS VIRTUDES CARDINALES, 3. LA MORAL SOCIAL", date: "2026-04-18", teachers: "Sam y Eli" },
+        { group: "Jóvenes", title: "Libro 3: 4. LA MORAL Y EL PSICOANÁLISIS, 5. MORAL SEXUAL, 6. EL MATRIMONIO CRISTIANO", date: "2026-05-01", teachers: "Isaì y Ara" },
+        { group: "Jóvenes", title: "Libro 3: 4. LA MORAL Y EL PSICOANÁLISIS, 5. MORAL SEXUAL, 6. EL MATRIMONIO CRISTIANO", date: "2026-05-02", teachers: "Isaì y Ara" },
+        { group: "Jóvenes", title: "Libro 3: 7. EL PERDÓN, 8. EL GRAN PECADO, 9. CARIDAD", date: "2026-05-15", teachers: "Sam y Eli" },
+        { group: "Jóvenes", title: "Libro 3: 7. EL PERDÓN, 8. EL GRAN PECADO, 9. CARIDAD", date: "2026-05-16", teachers: "Sam y Eli" },
+        { group: "Jóvenes", title: "Libro 3: 10. ESPERANZA, 11. FE, 12. FE", date: "2026-05-29", teachers: "Isaì y Ara" },
+        { group: "Jóvenes", title: "Libro 3: 10. ESPERANZA, 11. FE, 12. FE", date: "2026-05-30", teachers: "Isaì y Ara" },
+        { group: "Jóvenes", title: "Libro 4: 1. HACER Y ENGENDRAR, 2. EL DIOS TRIPERSONAL, 3. EL TIEMPO Y MÁS ALLÁ DEL TIEMPO", date: "2026-06-12", teachers: "Sam y Eli" },
+        { group: "Jóvenes", title: "Libro 4: 1. HACER Y ENGENDRAR, 2. EL DIOS TRIPERSONAL, 3. EL TIEMPO Y MÁS ALLÁ DEL TIEMPO", date: "2026-06-13", teachers: "Sam y Eli" },
+        { group: "Jóvenes", title: "Libro 4: 4. BUEN CONTAGIO, 5. LOS PORFIADOS SOLDADOS DE JUGUETE, 6. DOS NOTAS", date: "2026-06-26", teachers: "Isaì y Ara" },
+        { group: "Jóvenes", title: "Libro 4: 4. BUEN CONTAGIO, 5. LOS PORFIADOS SOLDADOS DE JUGUETE, 6. DOS NOTAS", date: "2026-06-27", teachers: "Isaì y Ara" },
+        { group: "Jóvenes", title: "Libro 4: 7. JUGAR A SER, 8. ¿ES DIFÍCIL O FÁCIL SER CRISTIANO?", date: "2026-07-10", teachers: "Sam y Eli" },
+        { group: "Jóvenes", title: "Libro 4: 7. JUGAR A SER, 8. ¿ES DIFÍCIL O FÁCIL SER CRISTIANO?", date: "2026-07-11", teachers: "Sam y Eli" },
+        { group: "Jóvenes", title: "Libro 4: 9. CALCULANDO EL COSTO, 10. PERSONAS AGRADABLES O NUEVOS HOMBRES", date: "2026-07-24", teachers: "Isaì y Ara" },
+        { group: "Jóvenes", title: "Libro 4: 9. CALCULANDO EL COSTO, 10. PERSONAS AGRADABLES O NUEVOS HOMBRES", date: "2026-07-25", teachers: "Isaì y Ara" },
+        { group: "Jóvenes", title: "Libro 4: 11. LOS NUEVOS HOMBRES", date: "2026-08-07", teachers: "Sam y Eli" },
+        { group: "Jóvenes", title: "Libro 4: 11. LOS NUEVOS HOMBRES", date: "2026-08-08", teachers: "Sam y Eli" }
     ];
 
-    let currentDate = new Date(2026, 1, 1); // Febrero 2026 por defecto
-    let activeFilters = {
-        group: 'all',
-        teacher: 'all'
-    };
+    let currentDate = new Date(2026, 1, 1); // Empezamos en febrero que es donde hay más data
+    let activeFilter = 'all';
 
     const monthNames = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
 
-    // Función para obtener la clase CSS según el maestro
-    function getEventClass(teacherName) {
-        if (teacherName.includes("Isaì")) return "event-isai-ara";
-        if (teacherName.includes("Sam")) return "event-sam-eli";
+    function getEventClass(teachers) {
+        if (teachers.includes("Isaì") || teachers.includes("Isaí")) return "event-isai-ara";
+        if (teachers.includes("Sam")) return "event-sam-eli";
         return "event-default";
     }
 
-    // Función principal para dibujar el calendario
     function renderCalendar() {
         const year = currentDate.getFullYear();
         const month = currentDate.getMonth();
-        
         document.getElementById('currentMonthDisplay').innerText = `${monthNames[month]} ${year}`;
         
-        const firstDayOfMonth = new Date(year, month, 1).getDay();
+        const firstDay = new Date(year, month, 1).getDay();
         const daysInMonth = new Date(year, month + 1, 0).getDate();
-        
         const calendarDays = document.getElementById('calendarDays');
         calendarDays.innerHTML = '';
 
-        // Rellenar días del mes anterior si es necesario
-        for (let i = 0; i < firstDayOfMonth; i++) {
-            const emptyCell = document.createElement('div');
-            emptyCell.className = 'day-cell border-r border-b bg-slate-50/30';
-            calendarDays.appendChild(emptyCell);
+        for (let i = 0; i < firstDay; i++) {
+            const empty = document.createElement('div');
+            empty.className = 'day-cell border-r border-b bg-slate-50/50';
+            calendarDays.appendChild(empty);
         }
 
-        // Crear celdas para cada día
         for (let day = 1; day <= daysInMonth; day++) {
             const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-            const dayCell = document.createElement('div');
-            dayCell.className = 'day-cell border-r border-b p-3 relative flex flex-col items-start';
+            const cell = document.createElement('div');
+            cell.className = 'day-cell border-r border-b p-2 flex flex-col items-start overflow-y-auto';
             
-            const dayNum = document.createElement('span');
-            dayNum.className = 'text-sm font-bold text-slate-400 mb-1';
-            dayNum.innerText = day;
-            dayCell.appendChild(dayNum);
+            const num = document.createElement('span');
+            num.className = 'text-xs font-bold text-slate-400 mb-1';
+            num.innerText = day;
+            cell.appendChild(num);
 
-            // Filtrar eventos para este día según los filtros activos
-            const dayEvents = events.filter(e => {
-                const dateMatch = e.date === dateStr;
-                const groupMatch = activeFilters.group === 'all' || e.group === activeFilters.group;
-                const teacherMatch = activeFilters.teacher === 'all' || e.teachers.includes(activeFilters.teacher.split(' ')[0]);
-                
-                return dateMatch && groupMatch && teacherMatch;
-            });
+            const dayEvents = events.filter(e => e.date === dateStr && (activeFilter === 'all' || e.group === activeFilter));
             
             dayEvents.forEach(event => {
-                const eventEl = document.createElement('div');
-                eventEl.className = `event-tag ${getEventClass(event.teachers)}`;
-                
-                // CAMBIO: Clase en negrita seguido del Tema
-                const groupLetter = event.group.charAt(0);
-                eventEl.innerHTML = `<span class="font-black text-[0.75rem]">${groupLetter}</span> - ${event.title}`;
-                
-                eventEl.onclick = () => openModal(event);
-                dayCell.appendChild(eventEl);
+                const tag = document.createElement('div');
+                tag.className = `event-tag ${getEventClass(event.teachers)}`;
+                const letter = event.group.charAt(0);
+                tag.innerHTML = `<strong>${letter}</strong> - ${event.title}`;
+                tag.onclick = () => openModal(event);
+                cell.appendChild(tag);
             });
-
-            calendarDays.appendChild(dayCell);
+            calendarDays.appendChild(cell);
         }
     }
 
-    function changeMonth(delta) {
-        currentDate.setMonth(currentDate.getMonth() + delta);
+    function changeMonth(d) {
+        currentDate.setMonth(currentDate.getMonth() + d);
         renderCalendar();
     }
 
-    function setFilter(type, value) {
-        activeFilters[type] = value;
-        
-        // Actualizar estados visuales de los botones de filtro
-        const prefix = type === 'group' ? 'filter-group' : 'filter-teacher';
-        const buttons = document.querySelectorAll(`button[id^="${prefix}-"]`);
-        
-        buttons.forEach(btn => {
-            btn.classList.remove('filter-btn-active');
-            if (btn.id.includes(value.split(' ')[0])) {
-                btn.classList.add('filter-btn-active');
-            }
+    function setFilter(type, val) {
+        activeFilter = val;
+        document.querySelectorAll('button[id^="filter-group-"]').forEach(b => {
+            b.classList.remove('filter-btn-active');
+            if (b.id.endsWith(val)) b.classList.add('filter-btn-active');
         });
-
         renderCalendar();
     }
 
-    function openModal(event) {
-        const modal = document.getElementById('eventModal');
-        const content = document.getElementById('modalContent');
-        const groupEl = document.getElementById('modalGroup');
-        
-        groupEl.innerText = event.group;
-        groupEl.className = `text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full bg-slate-100 text-slate-600`;
-        
-        document.getElementById('modalTitle').innerText = event.title;
-        document.getElementById('modalDate').innerText = new Date(event.date + 'T00:00:00').toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-        document.getElementById('modalTeachers').innerText = event.teachers;
-        
-        modal.classList.add('active');
-        setTimeout(() => {
-            content.classList.remove('scale-95', 'opacity-0');
-        }, 10);
+    function openModal(e) {
+        const m = document.getElementById('eventModal');
+        document.getElementById('modalGroup').innerText = e.group;
+        document.getElementById('modalTitle').innerText = e.title;
+        document.getElementById('modalDate').innerText = new Date(e.date + 'T00:00:00').toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' });
+        document.getElementById('modalTeachers').innerText = e.teachers;
+        m.classList.add('active');
+        setTimeout(() => document.getElementById('modalContent').classList.remove('scale-95', 'opacity-0'), 10);
     }
 
     function closeModal() {
-        const modal = document.getElementById('eventModal');
-        const content = document.getElementById('modalContent');
-        content.classList.add('scale-95', 'opacity-0');
-        setTimeout(() => {
-            modal.classList.remove('active');
-        }, 200);
+        document.getElementById('modalContent').classList.add('scale-95', 'opacity-0');
+        setTimeout(() => document.getElementById('eventModal').classList.remove('active'), 200);
     }
 
     window.onload = renderCalendar;
 </script>
-
 </body>
 </html>
